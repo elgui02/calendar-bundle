@@ -17,14 +17,13 @@ class CalendarController extends Controller
      */
     public function loadCalendarAction(Request $request)
     {
-        $startDatetime = new \DateTime();
-        $startDatetime->setTimestamp($request->get('start'));
-        
-        $endDatetime = new \DateTime();
-        $endDatetime->setTimestamp($request->get('end'));
-        
+        $startTime = $request->get('start');
+        $endTime   = $request->get('end');
+        $startDatetime = new \DateTime(date($startTime));
+        $endDatetime = new \DateTime(date($endTime));
+
         $events = $this->container->get('event_dispatcher')->dispatch(CalendarEvent::CONFIGURE, new CalendarEvent($startDatetime, $endDatetime, $request))->getEvents();
-        
+
         $response = new \Symfony\Component\HttpFoundation\Response();
         $response->headers->set('Content-Type', 'application/json');
         
